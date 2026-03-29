@@ -14,4 +14,4 @@ This project analyzes student academic performance using Python.
    python "Smart Academic Performance & Analytics.py"
 
 ## Author
-Your Name
+Omkar Damodar
