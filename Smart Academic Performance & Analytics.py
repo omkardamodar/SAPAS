@@ -1,37 +1,25 @@
+MODULE 1: FILE HANDLING MODULE (file_handler.py)
+This module is responsible for creating and managing the CSV file used to store student records.
 import csv
 import os
-import matplotlib.pyplot as plt
 
 FILENAME = "students_data.csv"
 
-# Create file if not exists
-if not os.path.exists(FILENAME):
-    with open(FILENAME, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([
-            "Roll No", "Name", "Math", "Physics",
-            "Chemistry", "Behaviour", "Total",
-            "Average", "Grade"
-        ])
+def create_file():
+    if not os.path.exists(FILENAME):
+        with open(FILENAME, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                "Roll No", "Name", "Math", "Physics",
+                "Chemistry", "Behaviour", "Total",
+                "Average", "Grade"
+            ])
+MODULE 2: OPERATIONS MODULE (operations.py)
+This module handles adding, viewing, searching, and removing student records.
+import csv
+from file_handler import FILENAME
+from analytics import calculate_grade
 
-
-# Grade Function
-def calculate_grade(avg):
-    if avg >= 90:
-        return "A+"
-    elif avg >= 80:
-        return "A"
-    elif avg >= 70:
-        return "B"
-    elif avg >= 60:
-        return "C"
-    elif avg >= 50:
-        return "D"
-    else:
-        return "F"
-
-
-# Add Student
 def add_student():
     roll = input("Enter Roll No: ")
     name = input("Enter Name: ")
@@ -52,10 +40,9 @@ def add_student():
             total, avg, grade
         ])
 
-    print("✅ Student Added Successfully!")
+    print("Student Added Successfully!")
 
 
-# View All Students
 def view_students():
     with open(FILENAME, 'r') as file:
         reader = csv.reader(file)
@@ -63,7 +50,6 @@ def view_students():
             print(row)
 
 
-# Search Student
 def search_student():
     roll_search = input("Enter Roll No to Search: ")
     found = False
@@ -78,10 +64,9 @@ def search_student():
                 break
 
     if not found:
-        print("❌ Student Not Found")
+        print("Student Not Found")
 
 
-# Remove Student
 def remove_student():
     roll_remove = input("Enter Roll No to Remove: ")
     rows = []
@@ -100,12 +85,30 @@ def remove_student():
         writer.writerows(rows)
 
     if found:
-        print("✅ Student Removed Successfully!")
+        print("Student Removed Successfully!")
     else:
-        print("❌ Student Not Found")
+        print("Student Not Found")
+MODULE 3: ANALYTICS MODULE (analytics.py)
+This module performs grade calculation, class analytics, and graph generation.
+import csv
+import matplotlib.pyplot as plt
+from file_handler import FILENAME
+
+def calculate_grade(avg):
+    if avg >= 90:
+        return "A+"
+    elif avg >= 80:
+        return "A"
+    elif avg >= 70:
+        return "B"
+    elif avg >= 60:
+        return "C"
+    elif avg >= 50:
+        return "D"
+    else:
+        return "F"
 
 
-# Class Analytics
 def class_analytics():
     total_students = 0
     total_marks = 0
@@ -131,13 +134,11 @@ def class_analytics():
 
     class_avg = total_marks / total_students
 
-    print("\n📊 Class Analytics")
     print("Total Students:", total_students)
     print("Class Average:", round(class_avg, 2))
     print("Topper:", topper, "with average", highest_avg)
 
 
-# Marks Graph
 def marks_graph():
     names = []
     averages = []
@@ -150,7 +151,6 @@ def marks_graph():
             names.append(row[1])
             averages.append(float(row[7]))
 
-    plt.figure(figsize=(8, 5))
     plt.bar(names, averages)
     plt.xlabel("Student Names")
     plt.ylabel("Average Marks")
@@ -158,7 +158,6 @@ def marks_graph():
     plt.show()
 
 
-# Behaviour Graph
 def behaviour_graph():
     good = 0
     average = 0
@@ -181,13 +180,17 @@ def behaviour_graph():
     labels = ["Good", "Average", "Poor"]
     values = [good, average, poor]
 
-    plt.figure(figsize=(6, 6))
     plt.pie(values, labels=labels, autopct="%1.1f%%")
     plt.title("Student Behaviour Graph")
     plt.show()
+MODULE 4: MAIN MODULE (main.py)
+This module controls the execution using a menu-driven program.
+from file_handler import create_file
+from operations import *
+from analytics import *
 
+create_file()
 
-# Main Menu
 while True:
     print("\n===== SAPAS MENU =====")
     print("1. Add Student")
@@ -216,7 +219,7 @@ while True:
     elif choice == "7":
         behaviour_graph()
     elif choice == "8":
-        print("Exiting SAPAS... Goodbye!")
+        print("Exiting SAPAS...")
         break
     else:
-        print("Invalid Choice. Try Again.")
+        print("Invalid Choice")
